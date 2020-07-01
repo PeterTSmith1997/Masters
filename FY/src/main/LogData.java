@@ -215,10 +215,11 @@ public class LogData extends JFrame {
 								
 									Integer risk = analise.calulateRisk(key, dataStore, ipFunctions.getLocation(key));
 									dataStore.addRisk(key, risk);
-
+									
 									System.out.println("row");
 									Integer value = dataStore.getOrrcancesOfip().get(key);
 									String vs = value.toString();
+									countMap.put(key, value);
 									mainsMd.addRow(new String[] {key, vs, risk.toString()});
 									
 									System.err.println(key+ vs+ risk.toString());
