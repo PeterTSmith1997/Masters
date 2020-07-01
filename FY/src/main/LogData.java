@@ -2,17 +2,14 @@ package main;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.Map.Entry;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -31,6 +28,7 @@ import javax.swing.table.DefaultTableModel;
 import admin.LoginUI;
 import dataModel.Analise;
 import dataModel.DataStore;
+import dataModel.IPFunctions;
 import dataModel.Reader;
 import net.miginfocom.swing.MigLayout;
 
@@ -85,7 +83,7 @@ public class LogData extends JFrame {
 		this.dataStore = dataStore;
 		makeui();
 		reader = new Reader(dataStore);
-		updaateGUI();
+
 	}
 
 	/**
@@ -147,28 +145,10 @@ public class LogData extends JFrame {
 
 		serchIPPL = new JPanel();
 		frmLogFileReader.getContentPane().add(serchIPPL, "cell 0 2,grow");
-
-		txtFilter = new JTextField();
-		txtFilter.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent arg0) {
-				String search = txtFilter.getText();
-				try {
-					setTimesHitIp(Integer.parseInt(search));
-					updaateGUI();
-				} catch (Exception e) {
-					setTimesHitIp(0);
-					updaateGUI();
-				}
-			}
-		});
-
 		lblSearchByTimes = new JLabel("Search by times hit");
 		lblSearchByTimes.setLabelFor(txtFilter);
 		serchIPPL.add(lblSearchByTimes);
-		txtFilter.setText("Filter");
-		serchIPPL.add(txtFilter);
-		txtFilter.setColumns(10);
+
 		
 				btnReadFile = new JButton("Read file (Start here)");
 				serchIPPL.add(btnReadFile);
@@ -210,9 +190,41 @@ public class LogData extends JFrame {
 							dataStore.setProtcals(analise.getProtocalCounts(dataStore.getHits()));
 							dataStore.setPages(analise.getPageCounts(dataStore.getHits()));
 							analise.getTimeCounts(dataStore.getHits());
-							analise.SetRiskmap(dataStore.getHits(), dataStore, mainUi);
+						
+							IPFunctions ipFunctions = new IPFunctions();
+							String ipHeader[] = new String[] { "ip", "Number", "Risk" };
+								    mainsMd = new DefaultTableModel(null, ipHeader) {
+										/**
+										 *
+										 */
+										private static final long serialVersionUID = 4585202425202280069L;
+
+										@Override
+										public boolean isCellEditable(int row, int columm) {
+											return false;
+										}
+									};
+									tbMain.setModel(mainsMd);
+							for (int i = 0; i < dataStore.getHits().size(); i++) {
+								String key = dataStore.getHits().get(i).getiPaddr();
+								HashMap<String, Integer> countMap = new HashMap<String, Integer>();
+								if (countMap.containsKey(key)) {
+
+
+								} else {
+								
+									Integer risk = analise.calulateRisk(key, dataStore, ipFunctions.getLocation(key));
+									dataStore.addRisk(key, risk);
+
+									System.out.println("row");
+									Integer value = dataStore.getOrrcancesOfip().get(key);
+									String vs = value.toString();
+									mainsMd.addRow(new String[] {key, vs, risk.toString()});
+									
+									System.err.println(key+ vs+ risk.toString());
+								}
+								}
 						}
-						updaateGUI();
 
 					}
 				});
@@ -237,31 +249,5 @@ public class LogData extends JFrame {
 		this.timesHitPages = timesHitPages;
 	}
 
-	public void updaateGUI() {
-		String ipHeader[] = new String[] { "ip", "Number", "Risk" };
-	    mainsMd = new DefaultTableModel(null, ipHeader) {
-			/**
-			 *
-			 */
-			private static final long serialVersionUID = 4585202425202280069L;
 
-			@Override
-			public boolean isCellEditable(int row, int columm) {
-				return false;
-			}
-		};
-		tbMain.setModel(mainsMd);
-	 
-		for (Entry<String, Integer> val : dataStore.getOrrcancesOfip()
-				.entrySet()) {
-			Integer value = val.getValue();
-			String vs = value.toString();
-			String risk = dataStore.getRisks().get(val.getKey()).toString();
-			if (val.getValue() >= timesHitIp) {
-				mainsMd.addRow(new String[] { val.getKey(), vs, risk});
-			}
-		}
-		
-
-	}
 }

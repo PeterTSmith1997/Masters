@@ -79,17 +79,7 @@ public class Analise {
 	 * @return 
 	 */
 	public void SetRiskmap(ArrayList<Hits> hits, DataStore dataStore, LogData mainUi) {
-		HashMap<String, Integer> countMap = new HashMap<String, Integer>();
-		for (int i = 0; i < hits.size(); i++) {
-			String key = hits.get(i).getiPaddr();
-			if (countMap.containsKey(key)) {
 
-
-			} else {
-				IPFunctions ipFunctions = new IPFunctions(); 
-				dataStore.addRisk(key, calulateRisk(key, dataStore, ipFunctions.getLocation(key)));
-			}
-		}
 	}
 
 	/**
