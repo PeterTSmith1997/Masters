@@ -14,8 +14,7 @@ public class DataStore {
 	private Map<String, Integer> pages = new HashMap<String, Integer>();
 	private Map<Integer, Integer> responses = new HashMap<Integer, Integer>();
 	private Map<String, Integer> risk = new HashMap<String,Integer>();
-	private int numberOfFiles = 0;
-
+	private Map <Integer, Integer> ProtocalScores = new HashMap<Integer, Integer>();
 	public DataStore() {
 	}
 
@@ -26,6 +25,7 @@ public class DataStore {
 	public void addReportedIP(String ip) {
 		reportedIps.add(ip);
 	}
+	
 
 	/**
 	 * @return the hits
@@ -34,12 +34,6 @@ public class DataStore {
 		return hits;
 	}
 
-	/**
-	 * @return the numberOfFiles
-	 */
-	public int getNumberOfFiles() {
-		return numberOfFiles;
-	}
 
 	/**
 	 * @return the orrcancesOfip
@@ -108,13 +102,6 @@ public class DataStore {
 		this.risk.put(ip, risk);
 	}
 	
-	/**
-	 * @param numberOfFiles
-	 *            the numberOfFiles to set
-	 */
-	public void setNumberOfFiles(int numberOfFiles) {
-		this.numberOfFiles = numberOfFiles;
-	}
 
 	/**
 	 * @param orrcancesOfip
@@ -162,6 +149,14 @@ public class DataStore {
 	 */
 	public void setResponses(Map<Integer, Integer> responses) {
 		this.responses = responses;
+	}
+
+	public Map <Integer, Integer> getReponseScores() {
+		return ProtocalScores;
+	}
+
+	public void setProtocalScores(Map <Integer, Integer> protocalScores) {
+		ProtocalScores = protocalScores;
 	}
 
 }

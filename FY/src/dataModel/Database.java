@@ -600,4 +600,22 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
+	public Map<Integer, Integer> Setprotcalscores() {
+		try {
+			Map<Integer, Integer> codes = new HashMap<Integer, Integer>();
+			PreparedStatement stmt = conn.prepareStatement("select HttpCode, Risk from Codes");
+			ResultSet resultSet = stmt.executeQuery();
+			while (resultSet.next()) {
+				codes.put(resultSet.getInt("HttpCode"), resultSet.getInt("risk"));
+				System.out.println(codes);
+				return codes;				
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
 }

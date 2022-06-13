@@ -28,6 +28,7 @@ import javax.swing.table.DefaultTableModel;
 import admin.LoginUI;
 import dataModel.Analise;
 import dataModel.DataStore;
+import dataModel.Database;
 import dataModel.IPFunctions;
 import dataModel.Reader;
 import net.miginfocom.swing.MigLayout;
@@ -71,6 +72,8 @@ public class LogData extends JFrame {
 
 	public LogData() {
 		dataStore = new DataStore();
+		Database database = new Database();
+		dataStore .setProtocalScores(database.Setprotcalscores());
 		reader = new Reader(dataStore);
 		makeui();
 
@@ -81,8 +84,10 @@ public class LogData extends JFrame {
 	 */
 	public LogData(DataStore dataStore) {
 		this.dataStore = dataStore;
-		makeui();
+		Database database = new Database();
+		makeui();	
 		reader = new Reader(dataStore);
+		updateGUI();
 
 	}
 
@@ -183,7 +188,6 @@ public class LogData extends JFrame {
 								reader.setFile(f.getAbsolutePath());
 								reader.readFile();
 							}
-							dataStore.setNumberOfFiles(files.length);
 							Analise analise = new Analise();
 							dataStore.setOrrcancesOfip(analise.getIpCounts(dataStore.getHits()));
 							dataStore.setReferers(analise.getRefererCounts(dataStore.getHits()));
@@ -205,9 +209,10 @@ public class LogData extends JFrame {
 										}
 									};
 									tbMain.setModel(mainsMd);
+									HashMap<String, Integer> countMap = new HashMap<String, Integer>();
 							for (int i = 0; i < dataStore.getHits().size(); i++) {
 								String key = dataStore.getHits().get(i).getiPaddr();
-								HashMap<String, Integer> countMap = new HashMap<String, Integer>();
+								
 								if (countMap.containsKey(key)) {
 
 
@@ -234,6 +239,14 @@ public class LogData extends JFrame {
 
 	}
 
+	private void updateGUI() {
+		for (int i = 0; i < dataStore.getHits().size(); i++) {
+			String key = dataStore.getHits().get(i).getiPaddr();
+			String  value = dataStore.getOrrcancesOfip().get(key).toString();
+			String risk = dataStore.getRisks().get(key).toString();
+			mainsMd.addRow(new String[] {key, value, risk});
+		}
+	}
 	/**
 	 * @param timesHitIp
 	 *            the timesHitIp to set
@@ -249,6 +262,6 @@ public class LogData extends JFrame {
 	public void setTimesHitPages(int timesHitPages) {
 		this.timesHitPages = timesHitPages;
 	}
-
-
+	
+		
 }

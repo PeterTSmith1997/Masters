@@ -232,28 +232,34 @@ public class Analise {
 		double requestRisk = 0;
 		for (Hits h : dataStore.getHits()) {
 			if (h.getiPaddr().equals(ip)) {
-				switch (h.getResponse()) {
-				case 400:
-					responseRisk += 0.5;
-					break;
-				case 401:
-					responseRisk += 5;
-					break;
-				case 403:
-					responseRisk += 2;
-					break;
-				case 404:
-					responseRisk += 1;
-					break;
-				case 429:
-					responseRisk += +2;
-					break;
-				case 500:
-					responseRisk += 0.2;
-					break;
-				case 200:
-					responseRisk -= 1;
-					break;
+//				switch (h.getResponse()) {
+//				case 400:
+//					responseRisk += 0.5;
+//					break;
+//				case 401:
+//					responseRisk += 5;
+//					break;
+//				case 403:
+//					responseRisk += 2;
+//					break;
+//				case 404:
+//					responseRisk += 1;
+//					break;
+//				case 429:
+//					responseRisk += +2;
+//					break;
+//				case 500:
+//					responseRisk += 0.2;
+//					break;
+//				case 200:
+//					responseRisk -= 1;
+//					break;
+//				}
+				if (dataStore.getReponseScores().get(h.getResponse()) == null) {
+					requestRisk =+0;
+				}
+				else {
+					requestRisk += dataStore.getReponseScores().get(h.getResponse()); 
 				}
 				if (containIgnoreCase(h.getRequest(), "wp-admin")) {
 					requestRisk += 3;
