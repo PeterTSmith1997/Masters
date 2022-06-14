@@ -30,7 +30,7 @@ public class Analise {
 
 	private Double rawRiskMod = 0.90;
 
-	private int totalRisk;
+	private Double ASNrisk = 0.0;
 
 	/**
 	 *
@@ -300,6 +300,7 @@ public class Analise {
 	}
 	public int calulateRisk (String ip, DataStore dataStore,String countryCode) {
 		database = new Database();
+		int totalRisk;
 		return totalRisk = (int) ((risk(ip, dataStore, countryCode) * getRawRiskMod())
 				+ (database.getRiskIP(ip) * getDbRiskMod()));
 	}
