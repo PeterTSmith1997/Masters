@@ -16,7 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import dataModel.DataStore;
-import dataModel.Database;
+import dataModel.helpers.Database;
 import main.LogData;
 import net.miginfocom.swing.MigLayout;
 

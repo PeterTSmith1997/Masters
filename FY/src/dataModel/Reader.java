@@ -56,6 +56,7 @@ public class Reader {
 			JOptionPane.showMessageDialog(null, "Error in processing file, please "
 					+ "make sure that the file is in the correct formmat",
 					"Error", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
 		} 
 		}
 

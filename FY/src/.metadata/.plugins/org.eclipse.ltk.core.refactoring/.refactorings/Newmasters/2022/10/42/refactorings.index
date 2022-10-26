@@ -1,0 +1,19 @@
+1666451543764	Delete element
+1666451549475	Delete element
+1666460907398	Extract method 'toFile'
+1666473606328	Delete element
+1666473627471	Delete elements
+1666476184154	Extract method 'makeTable'
+1666476484216	Move compilation unit
+1666544350120	Extract method 'calulateOccances'
+1666544496974	Extract method 'calulateRisk'
+1666544633446	Extract method 'normalise'
+1666544672060	Extract method 'asn'
+1666545215598	Convert local variable 'orrcancesOfipLog' to field
+1666545297388	Convert local variable 'responseRisk' to field
+1666545310077	Convert local variable 'requestRisk' to field
+1666545326047	Convert local variable 'userAgegentRisk' to field
+1666545360016	Convert local variable 'database' to field
+1666545388030	Convert local variable 'risk' to field
+1666545477569	Extract method 'requestResponse'
+1666546864693	Extract method 'mainLoop'

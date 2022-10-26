@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -29,9 +30,9 @@ import javax.swing.event.ChangeListener;
 
 import dataModel.Analise;
 import dataModel.DataStore;
-import dataModel.Database;
 import dataModel.Hits;
-import dataModel.IPFunctions;
+import dataModel.helpers.Database;
+import dataModel.helpers.IPFunctions;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -124,7 +125,7 @@ public class IPDetails extends JFrame {
 		// Get data
 		setTimesVisted(dataStore.getOrrcancesOfip().get(ip));
 		setTotalData(analise.getTotalDataForIP(dataStore.getHits(), ip));
-		ArrayList<Hits> hits = dataStore.getHits();
+		LinkedList<Hits> hits = dataStore.getHits();
 		countryCode = ipFunctions.getLocation(ip);
 		panelTop = new JPanel();
 		getContentPane().add(panelTop, BorderLayout.NORTH);
@@ -137,8 +138,8 @@ public class IPDetails extends JFrame {
 		getContentPane().add(panelRiskBar, BorderLayout.SOUTH);
 		panelRiskBar.setLayout(new BorderLayout(0, 0));
 		double riskRaw = analise.risk(ip, dataStore, countryCode);
-
-		int risk= analise.calulateRisk(ip, dataStore, countryCode);
+		
+		int risk = dataStore.getRisks().get(ip);
 		lblRiskFactor = new JLabel("Risk Factor: " + risk);
 		lblRiskFactor.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblRiskFactor.setHorizontalAlignment(SwingConstants.CENTER);

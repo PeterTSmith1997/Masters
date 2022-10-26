@@ -1,0 +1,72 @@
+package dataModel.helpers;
+
+public class BotAnalsis {
+	Database database = new Database();
+	String[] goodSigins = database.knownAU();
+	
+	public  BotAnalsis() {	
+		
+	}
+	
+	float testThisStringforGoodness( String userAgent ) { 
+
+		String testBits  [ ] = userAgent.split(" "); 
+
+		int score = 60 ; 
+
+		int countOfMatches  = 0 ; 
+
+		int countOfTested   = 0 ; 
+
+		// for each word in the test String 
+
+		for( String it : testBits ) 
+
+		{ 
+
+			//println("****", it, "*****" ); 
+
+			countOfTested ++ ; 
+
+			
+			for( String good :goodSigns ) 
+
+			{
+
+				if( good.equals( it )  ) 
+
+				{ 
+
+					countOfMatches ++; 
+
+					score -= 5 ; 
+
+					//println( it , " is good" , score ) ; 
+
+					break; 
+
+				} 
+
+			} 
+
+		} 
+
+		System.out.println(countOfMatches+ (float)countOfTested); 
+
+		System.out.println("Test items. " + testBits.length); 
+
+		System.out.println("final score " + score + " factin correct" + countOfMatches/(float)countOfTested  ) ; 
+
+
+
+		System.out.println("Percentage of correct = "+ 100*(countOfMatches/(float)countOfTested ) + "%");
+
+		return countOfMatches/(float)countOfTested  ; 
+
+
+
+	} 
+
+
+
+}

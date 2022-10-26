@@ -1,10 +1,18 @@
 package dataModel;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 
+import dataModel.helpers.Database;
+import dataModel.helpers.IPFunctions;
+import dataModel.helpers.Modifiers;
 import main.LogData;
 
 /**
@@ -19,20 +27,10 @@ public class Analise {
 	 * @param sub The substring that we are looking for
 	 * @return Boolean The comparison between strings
 	 */
-	private static boolean containIgnoreCase(String str, String sub) {
+	public static boolean containIgnoreCase(String str, String sub) {
 		return str.toLowerCase().contains(sub.toLowerCase());
 	}
-	
-	/**
-	 * Set the risk total weights for the dataBase
-	 */
-	private Double dbRiskMod = 0.1;
-
-	private Double rawRiskMod = 0.90;
-
-	private Double ASNrisk = 0.0;
-
-	/**
+		/**
 	 *
 	 */
 	public Analise() {
@@ -42,21 +40,19 @@ public class Analise {
 	/**
 	 * @return the dbRiskMod
 	 */
-	public Double getDbRiskMod() {
-		return dbRiskMod;
-	}
+	
 
 	/**
 	 * sets the map of IP counts
 	 * 
-	 * @param hits
+	 * @param linkedList
 	 *            - the ArrayList to be sorted
 	 * @return The map of sorted IPs with the no. of times in the dataset
 	 */
-	public HashMap<String, Integer> getIpCounts(ArrayList<Hits> hits) {
+	public HashMap<String, Integer> getIpCounts(LinkedList<Hits> linkedList) {
 		HashMap<String, Integer> countMap = new HashMap<String, Integer>();
-		for (int i = 0; i < hits.size(); i++) {
-			String key = hits.get(i).getiPaddr();
+		for (int i = 0; i < linkedList.size(); i++) {
+			String key = linkedList.get(i).getiPaddr();
 			if (countMap.containsKey(key)) {
 				int count = countMap.get(key);
 				count++;
@@ -84,13 +80,13 @@ public class Analise {
 
 	/**
 	 * Set the map of page count
-	 * @param hits - the ArrayList to be sorted
+	 * @param linkedList - the ArrayList to be sorted
 	 * @return The map of page counts
 	 */
-	public Map<String, Integer> getPageCounts(ArrayList<Hits> hits) {
+	public Map<String, Integer> getPageCounts(LinkedList<Hits> linkedList) {
 		Map<String, Integer> countMap = new TreeMap<String, Integer>();
-		for (int i = 0; i < hits.size(); i++) {
-			String key = hits.get(i).getRequest();
+		for (int i = 0; i < linkedList.size(); i++) {
+			String key = linkedList.get(i).getRequest();
 			if (countMap.containsKey(key)) {
 				int count = countMap.get(key);
 				count++;
@@ -108,10 +104,10 @@ public class Analise {
 	 * @param hits- the ArrayList to be sorted
 	 * @return The map of protocol counts
 	 */
-	public Map<String, Integer> getProtocalCounts(ArrayList<Hits> hits) {
+	public Map<String, Integer> getProtocalCounts(LinkedList<Hits> linkedList) {
 		Map<String, Integer> countMap = new TreeMap<String, Integer>();
-		for (int i = 0; i < hits.size(); i++) {
-			String key = hits.get(i).getProtocal();
+		for (int i = 0; i < linkedList.size(); i++) {
+			String key = linkedList.get(i).getProtocal();
 			if (countMap.containsKey(key)) {
 				int count = countMap.get(key);
 				count++;
@@ -124,22 +120,15 @@ public class Analise {
 		return countMap;
 	}
 
-	/**
-	 * @return the rawRiskMod
-	 */
-	public Double getRawRiskMod() {
-		return rawRiskMod;
-	}
-
-	/**
+		/**
 	 *
-	 * @param hits - the ArrayList to be sorted
+	 * @param linkedList - the ArrayList to be sorted
 	 * @return The map of referer counts
 	 */
-	public Map<String, Integer> getRefererCounts(ArrayList<Hits> hits) {
+	public Map<String, Integer> getRefererCounts(LinkedList<Hits> linkedList) {
 		Map<String, Integer> countMap = new TreeMap<String, Integer>();
-		for (int i = 0; i < hits.size(); i++) {
-			String key = hits.get(i).getReferer();
+		for (int i = 0; i < linkedList.size(); i++) {
+			String key = linkedList.get(i).getReferer();
 			if (countMap.containsKey(key)) {
 				int count = countMap.get(key);
 				count++;
@@ -153,13 +142,13 @@ public class Analise {
 
 	/**
 	 *
-	 * @param hits - the ArrayList to be sorted
+	 * @param linkedList - the ArrayList to be sorted
 	 * @return The map of time counts
 	 */
-	public Map<String, Integer> getTimeCounts(ArrayList<Hits> hits) {
+	public Map<String, Integer> getTimeCounts(LinkedList<Hits> linkedList) {
 		Map<String, Integer> countMap = new TreeMap<String, Integer>();
-		for (int i = 0; i < hits.size(); i++) {
-			String dateTime = hits.get(i).getDateTime();
+		for (int i = 0; i < linkedList.size(); i++) {
+			String dateTime = linkedList.get(i).getDateTime();
 			String[] data = dateTime.split(":");
 			String key = data[1] + ":" + data[2];
 			if (countMap.containsKey(key)) {
@@ -188,13 +177,13 @@ public class Analise {
 
 	/**
 	 *
-	 * @param hits - the ArrayList of all hits
+	 * @param linkedList - the ArrayList of all hits
 	 * @param ip The IP to get the data for
 	 * @return the total amount of data for an IP
 	 */
-	public int getTotalDataForIP(ArrayList<Hits> hits, String ip) {
+	public int getTotalDataForIP(LinkedList<Hits> linkedList, String ip) {
 		int total = 0;
-		for (Hits h : hits) {
+		for (Hits h : linkedList) {
 			if (h.getiPaddr().equals(ip)) {
 				total = total + h.getSize();
 			}
@@ -219,17 +208,20 @@ public class Analise {
 	 * @return Double Returns the risk factor
 	 */
 	public double risk(String ip, DataStore dataStore, String countryCode) {
+		File temp = new File("temp.csv");
 		double risk = 0;
 		Database database = new Database();
 		if (!database.knownBots(ip).equals("n/a")) {
 			return risk;
 		}
+		
 		double orrcancesOfipLog = Math
 				.log(dataStore.getOrrcancesOfip().get(ip));
 		orrcancesOfipLog = orrcancesOfipLog==0.00 ? 00.1 : orrcancesOfipLog;
 		double countryRisk = database.countryRisk(countryCode); 
 		double responseRisk = 0;
 		double requestRisk = 0;
+		double userAgegentRisk = 0;
 		for (Hits h : dataStore.getHits()) {
 			if (h.getiPaddr().equals(ip)) {
 //				switch (h.getResponse()) {
@@ -256,24 +248,56 @@ public class Analise {
 //					break;
 //				}
 				if (dataStore.getReponseScores().get(h.getResponse()) == null) {
-					requestRisk =+0;
+					responseRisk =+0;
 				}
 				else {
-					requestRisk += dataStore.getReponseScores().get(h.getResponse()); 
+					responseRisk += dataStore.getReponseScores().get(h.getResponse()); 
 				}
-				if (containIgnoreCase(h.getRequest(), "wp-admin")) {
-					requestRisk += 3;
+				if (containIgnoreCase(h.getUserAgent(), "${")) {
+					requestRisk += 5;					
 				}
-				if (containIgnoreCase(h.getRequest(), "login")) {
-					requestRisk += 2;
-				}
+				userAgegentRisk = dataStore.searchUA(h.getUserAgent());
+				/*
+				 * if (containIgnoreCase(h.getRequest(), "wp-admin")) { requestRisk += 3; } if
+				 * (containIgnoreCase(h.getRequest(), "login")) { requestRisk += 10; }
+				 */
+				requestRisk = requestRisk + dataStore.serchurls(h.getRequest());
 				if (h.getSize() == 0) {
 					responseRisk = +6;
 				}
+				
 			}
 
 		}
-		risk = (orrcancesOfipLog * 0.6) + ((requestRisk+responseRisk)*0.3) + (countryRisk * 0.1);
+		IPFunctions ipFunctions = new IPFunctions();
+		Integer asn;
+		Double asnrisk;
+		if (!(ipFunctions.getASN(ip)==null)) {
+			asn = ipFunctions.getASN(ip);
+		 	asnrisk = database.getASNRisk(asn);
+		} else {
+			asnrisk = 0.0;
+		}
+		Double requestResponseRisk = Math.log(requestRisk+responseRisk);
+		if (Double.isNaN(requestResponseRisk)) {
+			requestResponseRisk = 0.01;
+		}
+		Modifiers modifiers = new Modifiers();
+		
+		double networkRisk = (countryRisk*modifiers.getContrry())+(asnrisk*modifiers.getAsn())
+				+(userAgegentRisk*modifiers.getUseragegent());
+		
+		
+		risk = (orrcancesOfipLog * modifiers.getOrrcances()) +
+				(requestResponseRisk*modifiers.getRequestRespose()) + 
+				(networkRisk* modifiers.getNetwork());	
+	
+	 //logToFile(ip, temp, risk, orrcancesOfipLog, countryRisk, responseRisk, requestRisk, requestResponseRisk);
+		
+		if (risk>= DataStore.autoReport) {
+			database.updateRiskIP(ip, dataStore, risk);
+			dataStore.addReportedIP(ip);
+		}
 		if (risk > 100) {
 			return 100;
 		} else if (risk < 1) {
@@ -283,26 +307,40 @@ public class Analise {
 		}
 	}
 
+	private void logToFile(String ip, File temp, double risk, double orrcancesOfipLog, double countryRisk,
+			double responseRisk, double requestRisk, double rr) {
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(temp, true));
+			writer.write(ip +","+Double.toString(orrcancesOfipLog)+","+ Double.toString(responseRisk)+","+ 
+			Double.toString(requestRisk)+","+Double.toString(rr)+","+Double.toString(countryRisk)+","+Double.toString(risk)+
+			"\n");
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * @param dbRiskMod
 	 *            the dbRiskMod to set
 	 */
-	public void setDbRiskMod(Double dbRiskMod) {
-		this.dbRiskMod = dbRiskMod;
-	}
-
-	/**
-	 * @param rawRiskMod
-	 *            the rawRiskMod to set
-	 */
-	public void setRawRiskMod(Double rawRiskMod) {
-		this.rawRiskMod = rawRiskMod;
-	}
-	public int calulateRisk (String ip, DataStore dataStore,String countryCode) {
+		public int calulateRisk (String ip, DataStore dataStore,String countryCode) {
+			if (dataStore.getUsersIP().equals(ip)) {
+				return  -1;
+			}
 		database = new Database();
-		int totalRisk;
-		return totalRisk = (int) ((risk(ip, dataStore, countryCode) * getRawRiskMod())
-				+ (database.getRiskIP(ip) * getDbRiskMod()));
+		Modifiers modifiers = new Modifiers();
+		
+		int totalRisk = (int) ((risk(ip, dataStore, countryCode) * modifiers.getIp())
+				+ (database.getRiskIP(ip) * modifiers.getDb()));
+		if (totalRisk > 100) {
+			return 100;
+		}
+		else {
+			return totalRisk;
+		}
 	}
+		
 
 }

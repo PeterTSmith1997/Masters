@@ -1,20 +1,25 @@
 package dataModel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+import org.apache.commons.lang.StringUtils;
 
 public class DataStore {
 	public static final long monthMins = 43800;
-	private ArrayList<Hits> hits = new ArrayList<>();
+	private LinkedList<Hits> hits = new LinkedList<>();
 	private ArrayList<String> reportedIps = new ArrayList<>();
 	private Map<String, Integer> orrcancesOfip = new HashMap<String, Integer>();
+	private Map<String, Integer> ResponseRisk= new HashMap<String, Integer>();
 	private Map<String, Integer> referers = new HashMap<String, Integer>();
 	private Map<String, Integer> protcals = new HashMap<String, Integer>();
 	private Map<String, Integer> pages = new HashMap<String, Integer>();
 	private Map<Integer, Integer> responses = new HashMap<Integer, Integer>();
 	private Map<String, Integer> risk = new HashMap<String,Integer>();
-	private Map <Integer, Integer> ProtocalScores = new HashMap<Integer, Integer>();
+	private Map <Integer, Double> ProtocalScores = new HashMap<Integer, Double>();
+	private Map <String, Integer> urlSorces = new HashMap<String,Integer>();
+	private Map <String, Integer> userAgentScores = new HashMap<String,Integer>();
+	public static final int autoReport = 50;
+	private String usersIP;
 	public DataStore() {
 	}
 
@@ -25,12 +30,12 @@ public class DataStore {
 	public void addReportedIP(String ip) {
 		reportedIps.add(ip);
 	}
-	
+
 
 	/**
 	 * @return the hits
 	 */
-	public ArrayList<Hits> getHits() {
+	public LinkedList<Hits> getHits() {
 		return hits;
 	}
 
@@ -63,6 +68,22 @@ public class DataStore {
 		return referers;
 	}
 
+	public Map<String, Integer> getRisk() {
+		return risk;
+	}
+
+	public void setRisk(Map<String, Integer> risk) {
+		this.risk = risk;
+	}
+
+	public String getUsersIP() {
+		return usersIP;
+	}
+
+	public void setUsersIP(String usersIP) {
+		this.usersIP = usersIP;
+	}
+
 	/**
 	 * @return the reportedIps
 	 */
@@ -76,21 +97,21 @@ public class DataStore {
 	public Map<Integer, Integer> getResponses() {
 		return responses;
 	}
-	
+
 	/**
 	 * @param hits
 	 *            the hits to set
 	 */
-	public void setHits(ArrayList<Hits> hits) {
+	public void setHits(LinkedList<Hits> hits) {
 		this.hits = hits;
 	}
 	/**
-	 * @return the risk
+	 * @return the risk map
 	 */
 	public Map<String, Integer> getRisks() {
 		return risk;
 	}
-	
+
 	/**
 	 * @param risk
 	 *            the risk to set
@@ -101,7 +122,7 @@ public class DataStore {
 	public void addRisk(String ip, Integer risk) {
 		this.risk.put(ip, risk);
 	}
-	
+
 
 	/**
 	 * @param orrcancesOfip
@@ -151,12 +172,95 @@ public class DataStore {
 		this.responses = responses;
 	}
 
-	public Map <Integer, Integer> getReponseScores() {
+	public Map<Integer, Double> getReponseScores() {
 		return ProtocalScores;
 	}
 
-	public void setProtocalScores(Map <Integer, Integer> protocalScores) {
+	public void setProtocalScores(Map<Integer, Double> protocalScores) {
 		ProtocalScores = protocalScores;
 	}
 
+	public Map<String, Integer> getResponseRisk() {
+		return ResponseRisk;
+	}
+
+	public void setResponseRisk(Map<String, Integer> responseRisk) {
+		ResponseRisk = responseRisk;
+	}
+	public void clearRisks() {
+		risk.clear();
+	}
+
+	public Map<String, Integer> getUrlSorces() {
+		return urlSorces;
+	}
+
+	public void setUrlSorces(Map<String, Integer> urlSorces) {
+		this.urlSorces = urlSorces;
+	}
+
+	public Map<Integer, Double> getProtocalScores() {
+		return ProtocalScores;
+	}
+
+	public double serchurls(String request) {
+		double total = 0;
+		for (Map.Entry<String, Integer> entry : urlSorces.entrySet()) {
+			String key = entry.getKey();
+			if (Analise.containIgnoreCase(request, key)) {
+				System.out.println(entry.getValue());
+				total = total + entry.getValue();
+				System.err.println(request + " total "  + total + entry);
+			}
+		}
+		System.err.println(request + total);
+		return total;
+	}
+
+	public Map <String, Integer> getUserAgentScores() {
+		return userAgentScores;
+	}
+
+	public void setUserAgentScores(Map <String, Integer> userAgentSorces) {
+		this.userAgentScores = userAgentSorces;
+	}
+	//	Levenshein distanice?
+	public double searchUA(String ua) {
+		double val = 0 ;
+		String nearestUA = getClosestMatch(ua);
+		if (!(nearestUA==null)) {
+			val = userAgentScores.get(nearestUA);
+			System.out.print("match  found");
+		} else {
+			System.err.println("ua was " + ua);
+		}
+		return val;
+
+
+	}
+
+	private String getClosestMatch(String ua) {
+		int distance = Integer.MAX_VALUE;
+		String closest = null;
+		Double ratio = 100.1;
+		for (Map.Entry<String, Integer> entry : userAgentScores.entrySet()) {
+			int currentDistace = StringUtils.getLevenshteinDistance(entry.getKey(), ua);
+			if (currentDistace < distance) {
+				distance = currentDistace;
+				closest = entry.getKey(); 
+				ratio = ((double) currentDistace)/ (Math.max(entry.getKey().length(), 
+						ua.length()));
+				System.err.println(ua + closest + "Lev =" + distance + "R ="+ ratio);
+			}
+		}
+		if (ratio < 0.32) {
+			System.out.println("lev retun "+closest +"ua was "+ua);
+			return closest;
+		} else {
+			System.out.println("Lev returned null");
+			return null;
+		}
+	}
 }
+
+

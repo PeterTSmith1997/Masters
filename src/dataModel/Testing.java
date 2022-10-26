@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import dataModel.helpers.IPFunctions;
+
 public class Testing {
 	private String log = "dataNew.csv";
 	private File dataFile = new File(log);

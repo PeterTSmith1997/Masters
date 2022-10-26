@@ -6,14 +6,14 @@ package dataModel;
  */
 public class Hits {
 	
-	private String iPaddress;
-	private String request;
-	private String dateTime;
-	private int response;
-	private int size;
-	private String referer;
-	private String userAgent;
-	private String protocal;
+	private final String iPaddress;
+	private final String request;
+	private final String dateTime;
+	private final int response;
+	private final int size;
+	private final String referer;
+	private final String userAgent;
+	private final String protocal;
 
 	/**
 	 * @param iPaddress
@@ -91,85 +91,6 @@ public class Hits {
 	public String getProtocal() {
 		return protocal;
 	}
-
-	/**
-	 * @param iPaddress the iPaddress to set
-	 */
-	public void setiPaddr(String iPaddr) {
-		this.iPaddress = iPaddr;
-	}
-
-	/**
-	 * @param request the request to set
-	 */
-	public void setRequest(String request) {
-		this.request = request;
-	}
-
-	/**
-	 * @param dateTime the dateTime to set
-	 */
-	public void setDateTime(String dateTime) {
-		this.dateTime = dateTime;
-	}
-
-	/**
-	 * @param response the response to set
-	 */
-	public void setResponse(int response) {
-		this.response = response;
-	}
-
-	/**
-	 * @param size the size to set
-	 */
-	public void setSize(int size) {
-		this.size = size;
-	}
-
-	/**
-	 * @param referer the referer to set
-	 */
-	public void setReferer(String referer) {
-		this.referer = referer;
-	}
-
-	/**
-	 * @param userAgent the userAgent to set
-	 */
-	public void setUserAgent(String userAgent) {
-		this.userAgent = userAgent;
-	}
-
-	/**
-	 * @param protocal the protocal to set
-	 */
-	public void setProtocal(String protocal) {
-		this.protocal = protocal;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((dateTime == null) ? 0 : dateTime.hashCode());
-		result = prime * result
-				+ ((iPaddress == null) ? 0 : iPaddress.hashCode());
-		result = prime * result
-				+ ((protocal == null) ? 0 : protocal.hashCode());
-		result = prime * result + ((referer == null) ? 0 : referer.hashCode());
-		result = prime * result + ((request == null) ? 0 : request.hashCode());
-		result = prime * result + response;
-		result = prime * result + size;
-		result = prime * result
-				+ ((userAgent == null) ? 0 : userAgent.hashCode());
-		return result;
-	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */

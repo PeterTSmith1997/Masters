@@ -3,7 +3,7 @@ package admin;
 import javax.swing.JFrame;
 
 import dataModel.DataStore;
-import dataModel.Database;
+import dataModel.helpers.Database;
 import main.LogData;
 import java.awt.BorderLayout;
 

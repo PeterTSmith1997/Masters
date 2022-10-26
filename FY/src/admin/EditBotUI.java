@@ -19,7 +19,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import dataModel.DataStore;
-import dataModel.Database;
+import dataModel.helpers.Database;
 import net.miginfocom.swing.MigLayout;
 
 /**

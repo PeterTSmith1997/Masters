@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+
+import dataModel.helpers.Database;
 /**
  * Quick class to allow the updating of the country risk from a text file
  * Not part of the main system
